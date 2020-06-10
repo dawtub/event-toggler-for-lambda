@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: An application which toggle state of the Lambda event
+Parameters:
+  ASGName:
+    Type: String
+    Description: Enter name of an Auto-Scalling Group
+  LambdaARNs:
+    Type: String
+    Default: '*'
+    Description: Enter ARN's of Lambda functions. Default is any.
+Resources:
+  EventTogglerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: event-toggler-for-lambda
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.8
+      CodeUri: .
+      Policies:
+        - Statement:
+          - Sid: ListAndUpdateLambdaEvents
+            Effect: Allow
+            Action:
+              - lambda:UpdateEventSourceMapping
+              - lambda:ListEventSourceMappings
+            Resource:
+              - !Ref LambdaARNs
+      Events:
+        EBRule:
+          Type: EventBridgeRule
+          Properties:
+            Pattern:
+              source:
+                - aws.autoscalling
+              detail-type:
+                - EC2 Instance Launch Successful
+                - EC2 Instance Terminate Successful
+              AutoScalingGroupName:
+                - !Ref ASGName
