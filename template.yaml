@@ -8,7 +8,7 @@ Parameters:
   LambdaARNs:
     Type: String
     Default: '*'
-    Description: Enter ARN's of Lambda functions. Default is any.
+    Description: Enter ARN's of Lambda functions to look-up. Default is any.
 Resources:
   EventTogglerFunction:
     Type: AWS::Serverless::Function
@@ -36,5 +36,6 @@ Resources:
               detail-type:
                 - EC2 Instance Launch Successful
                 - EC2 Instance Terminate Successful
-              AutoScalingGroupName:
-                - !Ref ASGName
+              detail:
+                AutoScalingGroupName:
+                  - !Ref ASGName
