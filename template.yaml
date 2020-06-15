@@ -32,7 +32,7 @@ Resources:
           Properties:
             Pattern:
               source:
-                - aws.autoscalling
+                - aws.autoscaling
               detail-type:
                 - EC2 Instance Launch Successful
                 - EC2 Instance Terminate Successful
